@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.enums.HubEventType;
 import ru.practicum.enums.SensorEventType;
-import ru.practicum.event.hubs.DeviceAddedEvent;
-import ru.practicum.event.hubs.DeviceRemovedEvent;
 import ru.practicum.event.sensor.*;
 
 import java.time.Instant;

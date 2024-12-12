@@ -8,7 +8,6 @@ import ru.practicum.enums.HubEventType;
 import ru.practicum.enums.SensorEventType;
 import ru.practicum.event.scenario.ScenarioAddedEvent;
 import ru.practicum.event.scenario.ScenarioRemovedEvent;
-import ru.practicum.event.sensor.*;
 
 import java.time.Instant;
 

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.practicum.event.scenario.DeviceAction;
 import ru.practicum.event.scenario.ScenarioAddedEvent;
 import ru.practicum.event.scenario.ScenarioCondition;
-import ru.practicum.event.scenario.ScenarioRemovedEvent;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
 @UtilityClass
