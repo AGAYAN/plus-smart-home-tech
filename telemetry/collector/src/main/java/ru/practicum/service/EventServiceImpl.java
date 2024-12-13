@@ -14,9 +14,11 @@ import ru.practicum.mapper.SensorMapperEvent;
 import ru.practicum.model.HubEvent;
 import ru.practicum.model.SensorEvent;
 
+import java.time.Instant;
+
 @RequiredArgsConstructor
 @Service
-public class EventServiceImpl implements EventService {
+public class EventServiceImpl implements EventService, AutoCloseable {
     @Value("${topics.sensor}")
     private String sensorTopic;
 
@@ -27,25 +29,60 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public <T extends HubEvent> void collectHubEvent(T event) {
-        if(event instanceof DeviceAddedEvent) {
-            kafkaProducer.send(new ProducerRecord<>(hubTopic, HubMapperEvent.hubEventAvroAdded((DeviceAddedEvent) event)));
-        } else if(event instanceof DeviceRemovedEvent) {
-            kafkaProducer.send(new ProducerRecord<>(hubTopic, HubMapperEvent.hubEventAvroRemoved((DeviceRemovedEvent) event)));
+        String hubId = event.getHubId();
+        long eventTimestamp = event.getTimestamp().toEpochMilli();
+
+        String topic = determineTopic(hubId);
+        switch (event.getType()) {
+            case DEVICE_ADDED:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, HubMapperEvent.hubEventAvroAdded((DeviceAddedEvent) event)));
+                break;
+            case DEVICE_REMOVED:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, HubMapperEvent.hubEventAvroRemoved((DeviceRemovedEvent) event)));
+                break;
+            default:
+                throw new IllegalArgumentException("Неизвестный тип события");
         }
     }
 
     @Override
     public <T extends SensorEvent> void collectSensorEvent(T event) {
-        if (event instanceof ClimateSensorEvent) {
-            kafkaProducer.send(new ProducerRecord<>(sensorTopic, SensorMapperEvent.climateSensorAvro((ClimateSensorEvent) event)));
-        } else if (event instanceof LightSensorEvent) {
-            kafkaProducer.send(new ProducerRecord<>(sensorTopic, SensorMapperEvent.lightSensorAvro((LightSensorEvent) event)));
-        } else if (event instanceof MotionSensorEvent) {
-            kafkaProducer.send(new ProducerRecord<>(sensorTopic, SensorMapperEvent.motionSensorAvro((MotionSensorEvent) event)));
-        } else if (event instanceof SwitchSensorEvent) {
-            kafkaProducer.send(new ProducerRecord<>(sensorTopic, SensorMapperEvent.switchSensorAvro((SwitchSensorEvent) event)));
-        } else if (event instanceof TemperatureSensorEvent) {
-            kafkaProducer.send(new ProducerRecord<>(sensorTopic, SensorMapperEvent.temperatureSensorAvro((TemperatureSensorEvent) event)));
+        String hubId = event.getHubId();
+        long eventTimestamp = event.getTimestamp().toEpochMilli();
+
+        String topic = determineTopic(hubId);
+
+        switch (event.getType()) {
+            case CLIMATE_SENSOR_EVENT:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, SensorMapperEvent.climateSensorAvro((ClimateSensorEvent) event)));
+                break;
+            case LIGHT_SENSOR_EVENT:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, SensorMapperEvent.lightSensorAvro((LightSensorEvent) event)));
+                break;
+            case MOTION_SENSOR_EVENT:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, SensorMapperEvent.motionSensorAvro((MotionSensorEvent) event)));
+                break;
+            case SWITCH_SENSOR_EVENT:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, SensorMapperEvent.switchSensorAvro((SwitchSensorEvent) event)));
+                break;
+            case TEMPERATURE_SENSOR_EVENT:
+                kafkaProducer.send(new ProducerRecord<>(topic, null, eventTimestamp, hubId, SensorMapperEvent.temperatureSensorAvro((TemperatureSensorEvent) event)));
+                break;
+            default:
+                throw new IllegalArgumentException("Неизвестный тип события");
         }
+    }
+
+    private String determineTopic(String hubId) {
+        // я пока отправляю по умолчанию, по тому-что не понимаю что отправлять какой топик или я вообще запутался
+        // было бы круто если бы кинули тему где можно было бы изучить
+        return hubTopic;
+    }
+
+    @Override
+    public void close() throws Exception {
+        kafkaProducer.flush();
+
+        kafkaProducer.close();
     }
 }

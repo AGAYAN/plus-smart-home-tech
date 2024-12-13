@@ -7,11 +7,10 @@ import ru.practicum.event.scenario.ScenarioAddedEvent;
 import ru.practicum.event.scenario.ScenarioCondition;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
-@UtilityClass
 @Slf4j
 public class ScenarioMapperEvent {
 
-    public static ScenarioConditionAvro scenarioConditionAvro(ScenarioCondition scenarioCondition) {
+    public ScenarioConditionAvro scenarioConditionAvro(ScenarioCondition scenarioCondition) {
         return ScenarioConditionAvro.newBuilder()
                 .setSensorId(scenarioCondition.getSensorId())
                 .setValue(scenarioCondition.getValue())
@@ -20,7 +19,7 @@ public class ScenarioMapperEvent {
                 .build();
     }
 
-    public static DeviceActionAvro deviceActionAvro(DeviceAction deviceAction) {
+    public DeviceActionAvro deviceActionAvro(DeviceAction deviceAction) {
         return DeviceActionAvro.newBuilder()
                 .setSensorId(deviceAction.getSensorId())
                 .setValue(deviceAction.getValue())
@@ -29,7 +28,7 @@ public class ScenarioMapperEvent {
 
     }
 
-    public static HubEventAvro hubEventAvro(ScenarioAddedEvent scenarioAddedEvent) {
+    public HubEventAvro hubEventAvro(ScenarioAddedEvent scenarioAddedEvent) {
         return HubEventAvro.newBuilder()
                 .setHubId(scenarioAddedEvent.getHubId())
                 .setTimestamp(scenarioAddedEvent.getTimestamp())

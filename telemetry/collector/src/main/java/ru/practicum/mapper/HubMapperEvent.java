@@ -13,7 +13,7 @@ import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 @Slf4j
 public class HubMapperEvent {
 
-    public static HubEventAvro hubEventAvroAdded(DeviceAddedEvent deviceAddedEvent) {
+    public HubEventAvro hubEventAvroAdded(DeviceAddedEvent deviceAddedEvent) {
         return HubEventAvro.newBuilder()
                 .setHubId(deviceAddedEvent.getHubId())
                 .setTimestamp(deviceAddedEvent.getTimestamp())
@@ -24,7 +24,7 @@ public class HubMapperEvent {
 
     }
 
-    public static HubEventAvro hubEventAvroRemoved(DeviceRemovedEvent deviceRemovedEvent) {
+    public HubEventAvro hubEventAvroRemoved(DeviceRemovedEvent deviceRemovedEvent) {
         return HubEventAvro.newBuilder()
                 .setHubId(deviceRemovedEvent.getHubId())
                 .setTimestamp(deviceRemovedEvent.getTimestamp())

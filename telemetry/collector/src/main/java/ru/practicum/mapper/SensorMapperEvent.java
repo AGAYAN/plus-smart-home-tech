@@ -9,7 +9,7 @@ import ru.yandex.practicum.kafka.telemetry.event.*;
 @Slf4j
 public class SensorMapperEvent {
 
-    public static ClimateSensorAvro climateSensorAvro(ClimateSensorEvent climateSensorEvent) {
+    public ClimateSensorAvro climateSensorAvro(ClimateSensorEvent climateSensorEvent) {
         return ClimateSensorAvro.newBuilder()
                 .setCo2Level(climateSensorEvent.getCo2Level())
                 .setHumidity(climateSensorEvent.getHumidity())
@@ -17,14 +17,14 @@ public class SensorMapperEvent {
                 .build();
     }
 
-    public static LightSensorAvro lightSensorAvro(LightSensorEvent lightSensorEvent) {
+    public LightSensorAvro lightSensorAvro(LightSensorEvent lightSensorEvent) {
         return LightSensorAvro.newBuilder()
                 .setLinkQuality(lightSensorEvent.getLinkQuality())
                 .setLuminosity(lightSensorEvent.getLuminosity())
                 .build();
     }
 
-    public static MotionSensorAvro motionSensorAvro(MotionSensorEvent motionSensorEvent) {
+    public MotionSensorAvro motionSensorAvro(MotionSensorEvent motionSensorEvent) {
         return MotionSensorAvro.newBuilder()
                 .setMotion(motionSensorEvent.isMotion())
                 .setVoltage(motionSensorEvent.getVoltage())
@@ -32,13 +32,13 @@ public class SensorMapperEvent {
                 .build();
     }
 
-    public static SwitchSensorAvro switchSensorAvro(SwitchSensorEvent switchSensorEvent) {
+    public SwitchSensorAvro switchSensorAvro(SwitchSensorEvent switchSensorEvent) {
         return SwitchSensorAvro.newBuilder()
                 .setState(switchSensorEvent.isState())
                 .build();
     }
 
-    public static TemperatureSensorAvro temperatureSensorAvro(TemperatureSensorEvent temperatureSensorEvent) {
+    public TemperatureSensorAvro temperatureSensorAvro(TemperatureSensorEvent temperatureSensorEvent) {
         return TemperatureSensorAvro.newBuilder()
                 .setId(temperatureSensorEvent.getId())
                 .setHubId(temperatureSensorEvent.getHubId())
