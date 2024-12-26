@@ -51,7 +51,7 @@ public class HubEventProcessor implements Runnable {
 
     private void processDeviceRemovedEvent(String hubId, DeviceRemovedEventAvro event) {
         log.info("Устройство удалено из хаба {}: ID={}", hubId, event.getId());
-        // Логика обработки удаления устройства
+        // Логика обработки удаления устройств
     }
 
     private void processScenarioAddedEvent(String hubId, ScenarioAddedEventAvro event) {
