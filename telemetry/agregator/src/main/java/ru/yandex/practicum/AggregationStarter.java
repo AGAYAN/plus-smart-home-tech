@@ -94,7 +94,7 @@ public class AggregationStarter {
                                     log.info("{} отправлено {}", this.getClass().getName(), sensorsSnapshotAvro);
                                 });
                     } catch (Exception e) {
-                        log.error("Ошибка обработка сообщения : {}", record.value(), e);
+                        log.error("Ошибка обработка сообщения: {}", record.value(), e);
                     }
                 }
                 try{
