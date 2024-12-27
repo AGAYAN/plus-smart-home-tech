@@ -99,7 +99,7 @@ public class AggregationStarter {
                 }
                 try{
                     consumer.commitSync();
-                    log.info("Оффсеты зафиксированы");
+                    log.info("Оффсеты зафиксирован");
                 } catch (CommitFailedException e) {
                     log.error("Ошибки фиксации оффсетов", e);
                 }
