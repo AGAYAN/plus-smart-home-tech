@@ -8,7 +8,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.deserializer.SnapshotService;
@@ -66,26 +65,43 @@ public class AggregationStarter {
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializerClass);
         consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializerClass);
+        consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         Consumer<String, SensorEventAvro> consumer = new KafkaConsumer<>(consumerConfig);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Сработал хук на завершение JVM. Прерываю работу консьюмера.");
+            consumer.wakeup();
+        }));
+
         try {
             consumer.subscribe(List.of(sensorsTopic));
             while (true) {
                 ConsumerRecords<String, SensorEventAvro> records =
                         consumer.poll(Duration.ofMillis(1000));
                 for (ConsumerRecord<String, SensorEventAvro> record : records) {
-                    log.info("Получено сообщение из партиции {}, со смещением {}:\n{}\n",
-                            record.partition(), record.offset(), record.value());
-                    Optional<SensorsSnapshotAvro> optionalSensorsSnapshotAvro = service.updateState(record.value());
-                    optionalSensorsSnapshotAvro
-                            .ifPresent(sensorsSnapshotAvro -> {
-                                snapshots
-                                        .put(record.value().getHubId(), sensorsSnapshotAvro);
+                    try {
+                        log.info("Получено сообщение из партиции {}, со смещением {}:\n{}\n",
+                                record.partition(), record.offset(), record.value());
+                        Optional<SensorsSnapshotAvro> optionalSensorsSnapshotAvro = service.updateState(record.value());
+                        optionalSensorsSnapshotAvro
+                                .ifPresent(sensorsSnapshotAvro -> {
+                                    snapshots
+                                            .put(record.value().getHubId(), sensorsSnapshotAvro);
 
-                                producer.send(new ProducerRecord<>(sensorsSnapshotsTopic, sensorsSnapshotAvro));
+                                    producer.send(new ProducerRecord<>(sensorsSnapshotsTopic, sensorsSnapshotAvro));
 
-                                log.info("{} отправлено {}", this.getClass().getName(), sensorsSnapshotAvro);
-                            });
+                                    log.info("{} отправлено {}", this.getClass().getName(), sensorsSnapshotAvro);
+                                });
+                    } catch (Exception e) {
+                        log.error("Ошибка обработка сообщения: {}", record.value(), e);
+                    }
+                }
+                try{
+                    consumer.commitSync();
+                    log.info("Оффсеты зафиксированы");
+                } catch (CommitFailedException e) {
+                    log.error("Ошибки фиксации оффсетов", e);
                 }
             }
 

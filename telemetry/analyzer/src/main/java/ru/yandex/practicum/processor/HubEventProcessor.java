@@ -1,34 +1,42 @@
 package ru.yandex.practicum.processor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.kafka.KafkaConsumerConfig;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
 import java.time.Duration;
 import java.util.Collections;
 
-
 @Component
 @Slf4j
 public class HubEventProcessor implements Runnable {
 
-    private  KafkaConsumer<String, HubEventAvro> consumer;
+    private final KafkaConsumer<String, HubEventAvro> consumer;
+
+    public HubEventProcessor(KafkaConsumerConfig kafkaConsumerConfig) {
+        this.consumer = kafkaConsumerConfig.hubEventsConsumer();
+    }
 
     @Override
     public void run() {
-        while (true) {
-            try {
+        try {
+            consumer.subscribe(Collections.singleton("telemetry.hubs.v1"));
+
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<String, HubEventAvro> records = consumer.poll(Duration.ofMillis(100));
-                consumer.subscribe(Collections.singleton("telemetry.hubs.v1"));
+
                 for (ConsumerRecord<String, HubEventAvro> record : records) {
+                    log.info("Received event: {}", record.value());
                     processHubEvent(record.value());
                 }
-            } catch (Exception e) {
-                log.error("Ошибка при обработке событий хабов: ", e);
             }
+        } catch (Exception e) {
+            log.error("Error processing hub events", e);
         }
     }
 

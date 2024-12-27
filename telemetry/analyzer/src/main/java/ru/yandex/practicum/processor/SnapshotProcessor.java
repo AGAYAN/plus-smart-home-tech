@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.grpc.telemetry.event.*;
+import ru.yandex.practicum.kafka.KafkaConsumerConfig;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Duration;
@@ -14,20 +15,30 @@ import java.util.Collections;
 @Component
 @Slf4j
 public class SnapshotProcessor implements Runnable {
-    private KafkaConsumer<String, SensorsSnapshotAvro> consumer;
+
+    private final KafkaConsumer<String, SensorsSnapshotAvro> consumer;
+
+    public SnapshotProcessor(KafkaConsumerConfig kafkaConsumerConfig) {
+        this.consumer = kafkaConsumerConfig.snapshotConsumer();
+    }
+
 
     @Override
     public void run() {
-        while (true) {
-            try {
+        try {
+            consumer.subscribe(Collections.singleton("telemetry.hubs.v1"));
+
+            while (!Thread.currentThread().isInterrupted()) {
                 ConsumerRecords<String, SensorsSnapshotAvro> records = consumer.poll(Duration.ofMillis(100));
-                consumer.subscribe(Collections.singleton("telemetry.hubs.v1"));
+
                 for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
                     processSnapshot(record.value());
                 }
-            } catch (Exception e) {
-                log.error("Ошибка при обработке событий хабов: ", e);
             }
+        } catch (Exception e) {
+            log.error("Ошибка при обработке событий хабов: ", e);
+        } finally {
+            consumer.close();
         }
     }
 

@@ -1,8 +1,12 @@
 package ru.yandex.practicum.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.util.Properties;
 
@@ -21,6 +25,19 @@ public class KafkaConsumerConfig {
     @Value("${snapshots_value_deserializer_class}")
     private static String snapshotValueDeserialize;
 
+    @Bean
+    public KafkaConsumer<String, HubEventAvro> hubEventsConsumer() {
+        Properties consumerConfig = baseProperties();
+        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, hubEventsValueDeserializerClass);
+        return new KafkaConsumer<>(consumerConfig);
+    }
+
+    @Bean
+    public KafkaConsumer<String, SensorsSnapshotAvro> snapshotConsumer() {
+        Properties consumerConfig = baseProperties();
+        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, snapshotValueDeserialize);
+        return new KafkaConsumer<>(consumerConfig);
+    }
 
     private static Properties baseProperties () {
         Properties config = new Properties();
@@ -32,4 +49,6 @@ public class KafkaConsumerConfig {
 
         return config;
     }
+
+
 }

@@ -16,16 +16,23 @@ public class SnapshotService {
     private final Map<String, SensorsSnapshotAvro> snapshots = new ConcurrentHashMap<>();
 
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
+        // Получаем идентификатор хаба
         String hubId = event.getHubId();
+
+        // Если для хаба ещё нет снимка состояния, создаём новый с пустым набором состояний
         snapshots.putIfAbsent(hubId, new SensorsSnapshotAvro(hubId, event.getTimestamp(), new HashMap<>()));
         SensorsSnapshotAvro snapshot = snapshots.get(hubId);
 
+        // Получаем текущее состояние датчика по его ID
         SensorStateAvro currentState = snapshot.getSensorsState().get(event.getId());
+        //Сравнение
         if (currentState != null && currentState.getData().equals(event.getPayload())) {
             return Optional.empty();
         }
 
         SensorStateAvro newState = new SensorStateAvro(event.getTimestamp(), event.getPayload());
+
+        // обновляем данные
         snapshot.getSensorsState().put(event.getId(), newState);
         snapshot.setTimestamp(event.getTimestamp());
         return Optional.of(snapshot);
