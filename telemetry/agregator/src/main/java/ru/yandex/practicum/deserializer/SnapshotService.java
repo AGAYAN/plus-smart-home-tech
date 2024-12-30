@@ -37,4 +37,10 @@ public class SnapshotService {
         snapshot.setTimestamp(event.getTimestamp());
         return Optional.of(snapshot);
     }
+
+    public void handleSnapshot(SensorsSnapshotAvro snapshot) {
+        // Логика обработки снапшота
+        snapshots.put(snapshot.getHubId(), snapshot);
+        System.out.println("Сохранён снапшот для хаба: " + snapshot.getHubId());
+    }
 }

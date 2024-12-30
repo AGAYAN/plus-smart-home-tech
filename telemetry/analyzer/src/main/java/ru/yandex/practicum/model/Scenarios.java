@@ -16,4 +16,9 @@ public class Scenarios {
     private Long id;
     private String hub_id;
     private String name;
+
+    public Scenarios(String hubId, String name) {
+        this.hub_id = hubId;
+        this.name = name;
+    }
 }
