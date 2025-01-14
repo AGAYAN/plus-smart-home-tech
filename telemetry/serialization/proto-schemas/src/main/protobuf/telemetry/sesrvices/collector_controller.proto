@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package ru.yandex.practicum.grpc.collector_controller.event;
+
+option java_multiple_files = true;
+option java_outer_classname = "CollectorControllerProto";
+import "google/protobuf/timestamp.proto";
+option java_package = "ru.yandex.practicum.grpc.collector_controller.proto";
+
+import "google/protobuf/empty.proto";
+
+service CollectorController {
+  rpc CollectSensorEvent (SensorEventProto) returns (google.protobuf.Empty);
+}
+
+message SensorEventProto {
+  string id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  string hubId = 3;
+
+  oneof payload {
+    MotionSensorEvent motion_sensor_event = 4;
+    SwitchSensorEvent switch_sensor_event = 5;
+  }
+}
+
+message MotionSensorEvent {
+  int32 link_quality = 1;
+  bool motion = 2;
+  int32 voltage = 3;
+}
+
+message SwitchSensorEvent {
+  int32 link_quality = 1;
+  bool state = 2;
+  int32 voltage = 3;
+}
