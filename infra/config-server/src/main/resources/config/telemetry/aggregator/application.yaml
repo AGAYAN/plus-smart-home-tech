@@ -1,0 +1,11 @@
+topics:
+  sensors: telemetry.sensors.v1
+  snapshots: telemetry.snapshots.v1
+
+bootstrap_server: localhost:9092
+
+key_deserializer_class: org.apache.kafka.common.serialization.StringDeserializer
+value_deserializer_class: ru.yandex.practicum.kafka.telemetry.event.SensorEventAvroDeserializer
+
+key_serializer_class: org.apache.kafka.common.serialization.StringSerializer
+value_serializer_class: org.apache.kafka.common.serialization.StringSerializer

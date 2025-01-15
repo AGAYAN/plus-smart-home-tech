@@ -80,8 +80,8 @@ Temporary Items
 *.icloud
 
 ### Maven ###
-!**/src/main/**/target/
-!**/src/test/**/target/
+!infra/config-server/src/main/**/target/
+!infra/config-server/src/test/**/target/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
