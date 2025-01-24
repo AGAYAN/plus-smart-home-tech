@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: shopping-cart
+  cloud:
+    config:
+      uri: http://localhost:9999
+    discovery:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+
+shopping-store:
+  db:
+    url: jdbc:postgresql://localhost:5432/shopdb
+    username: postgres
+    password: admin
