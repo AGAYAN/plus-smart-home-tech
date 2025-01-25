@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS warehouse (
-    product_id VARCHAR PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     quantity   INTEGER,
     fragile    BOOLEAN,
     width      double precision NOT NULL,
