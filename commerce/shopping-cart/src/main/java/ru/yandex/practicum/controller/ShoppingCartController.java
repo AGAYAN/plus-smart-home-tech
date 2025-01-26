@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.shoppingCart.controller.ShoppingCartClient;
 import ru.yandex.practicum.shoppingCart.dto.BookedProductsDto;
 import ru.yandex.practicum.shoppingCart.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.shoppingCart.dto.ShoppingCartDto;
@@ -14,13 +15,12 @@ import ru.yandex.practicum.service.ShoppingCartService;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/shopping-cart")
 @RequiredArgsConstructor
-public class ShoppingCartController {
+public class ShoppingCartController implements ShoppingCartClient {
 
     private final ShoppingCartService shoppingCartService;
 
-    @PostMapping
+    @Override
     public ResponseEntity<ShoppingCartDto> addProductsToCart(
             @RequestParam String username,
             @RequestBody Map<String, Integer> products) {
@@ -37,7 +37,7 @@ public class ShoppingCartController {
         }
     }
 
-    @GetMapping
+    @Override
     public ResponseEntity<ShoppingCartDto> getShoppingCart(@RequestParam String username) {
         if (username == null || username.isBlank()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -49,7 +49,7 @@ public class ShoppingCartController {
     }
 
 
-    @DeleteMapping
+    @Override
     public ResponseEntity<String> deactivateShoppingCart(@RequestParam String username) {
         if (username == null || username.isBlank()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -60,7 +60,7 @@ public class ShoppingCartController {
         return ResponseEntity.ok("Корзина пользователя успешно деактивирована.");
     }
 
-    @PutMapping("/remove")
+    @Override
     public ResponseEntity<ShoppingCart> updateCart(
             @RequestParam String username,
             @RequestBody Map<String, Integer> products) {
@@ -73,7 +73,7 @@ public class ShoppingCartController {
         }
     }
 
-    @PostMapping("/change-quantity")
+    @Override
     public ResponseEntity<Object> changeProductQuantity(
             @RequestParam String username,
             @RequestBody ChangeProductQuantityRequest request) {
@@ -89,11 +89,11 @@ public class ShoppingCartController {
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ErrorResponse(e.getMessage()));
+                    new ErrorResponse(null, e.getMessage()));
         }
     }
 
-    @PostMapping("/booking")
+    @Override
     public ResponseEntity<Object> reserveProducts(@RequestParam String username) {
         if (username == null || username.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -104,7 +104,7 @@ public class ShoppingCartController {
             return ResponseEntity.ok(bookingResponse);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse("Ошибка, товара уже нет на складе"));
+                    .body(new ErrorResponse("Ошибка, товара уже нет на складе", null));
         }
     }
 }

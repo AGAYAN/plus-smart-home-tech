@@ -1,9 +1,6 @@
 package ru.yandex.practicum.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,11 +20,12 @@ public class Product {
     private String productName;
     private String description;
     private String imageSrc;
+    @Enumerated(EnumType.STRING)
     private QuantityState quantityState;
+    @Enumerated(EnumType.STRING)
     private ProductState productState;
     private Double rating;
+    @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
     private Double price;
-    //private int quantity;
-
 }

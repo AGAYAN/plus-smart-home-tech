@@ -2,8 +2,9 @@ package ru.yandex.practicum.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.shoppingStore.dto.Pageable;
 import ru.yandex.practicum.shoppingStore.dto.ProductDto;
 import ru.yandex.practicum.shoppingStore.dto.SetProductQuantityStateDto;
 import ru.yandex.practicum.mapper.ProductMapper;
@@ -51,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto updateProduct(ProductDto productDto) {
         Optional<Product> existingProduct = productRepository.findByProductId(productDto.getProductId());
 
-        if (!existingProduct.isPresent()) {
+        if (existingProduct.isEmpty()) {
             throw new RuntimeException("Нету такого товара в таким id");
         }
 

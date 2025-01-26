@@ -1,6 +1,6 @@
 package ru.yandex.practicum.service;
 
-import org.springframework.data.domain.Pageable;
+import ru.yandex.practicum.shoppingStore.dto.Pageable;
 import ru.yandex.practicum.shoppingStore.dto.ProductDto;
 import ru.yandex.practicum.shoppingStore.dto.SetProductQuantityStateDto;
 import ru.yandex.practicum.model.Product;

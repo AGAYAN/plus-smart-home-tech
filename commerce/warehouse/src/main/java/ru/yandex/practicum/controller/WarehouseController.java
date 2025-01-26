@@ -4,23 +4,22 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.dto.NewProductInWarehouseDto;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
+import ru.yandex.practicum.warehouse.dto.AddressDto;
 import ru.yandex.practicum.shoppingCart.dto.BookedProductsDto;
 import ru.yandex.practicum.shoppingCart.dto.ShoppingCartDto;
 import ru.yandex.practicum.service.WarehouseService;
+import ru.yandex.practicum.warehouse.controller.WarehouseClient;
+import ru.yandex.practicum.warehouse.dto.NewProductInWarehouseDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/warehouse")
-public class WarehouseController {
+public class WarehouseController implements WarehouseClient {
 
     private final WarehouseService warehouseService;
 
-    @PostMapping("/check")
+    @Override
     public ResponseEntity<Object> checkProductAvailability(@RequestBody @Valid ShoppingCartDto shoppingCart) {
         try {
             BookedProductsDto response = warehouseService.checkAvailableProducts(shoppingCart);
@@ -30,9 +29,21 @@ public class WarehouseController {
         }
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<Void> createProductToWarehouse(@RequestBody @Valid NewProductInWarehouseDto request) {
         warehouseService.createProductToWarehouse(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-}
+
+    @GetMapping
+    public ResponseEntity<AddressDto> getAddress() {
+        warehouseService.addAddress();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> increaseProductQuantity(AddProductToWarehouseRequest request) {
+        warehouseService.increaseProductQuantity(request);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+} 

@@ -1,10 +1,11 @@
 package ru.yandex.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.shoppingStore.controller.ShoppingStoreClient;
+import ru.yandex.practicum.shoppingStore.dto.Pageable;
 import ru.yandex.practicum.shoppingStore.dto.ProductDto;
 import ru.yandex.practicum.shoppingStore.dto.SetProductQuantityStateDto;
 import ru.yandex.practicum.exception.ErrorResponse;
@@ -16,13 +17,12 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/shopping-store")
-public class ProductController {
+public class ProductController implements ShoppingStoreClient {
 
     private ProductService productService;
 
-    @PostMapping
-    private ResponseEntity<Object> createProduct(@RequestBody ProductDto productDto) {
+    @Override
+    public ResponseEntity<Object> createProduct(@RequestBody ProductDto productDto) {
         try {
             productService.createProduct(productDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(productDto);
@@ -32,8 +32,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{productId}")
-    private ResponseEntity<Object> ProductIdInformation(@PathVariable Long productId) {
+    @Override
+    public ResponseEntity<Object> ProductIdInformation(@PathVariable Long productId) {
         try {
             if (productId == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -47,14 +47,14 @@ public class ProductController {
         }
     }
 
-    @GetMapping
-    private ResponseEntity<List<ProductDto>> getProductByCategory(@RequestParam("category") String category, Pageable pageable) {
+    @Override
+    public ResponseEntity<List<ProductDto>> getProductByCategory(@RequestParam("category") String category, Pageable pageable) {
         List<ProductDto> productDtos = productService.productsByCategory(category, pageable);
         return ResponseEntity.ok(productDtos);
     }
 
-    @PutMapping
-    private ResponseEntity<Object> updateProduct(@RequestBody ProductDto productDto) {
+    @Override
+    public ResponseEntity<Object> updateProduct(@RequestBody ProductDto productDto) {
         try {
             productService.updateProduct(productDto);
             return ResponseEntity.status(HttpStatus.OK).body(productDto);
@@ -64,8 +64,8 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/removeProductFromStore")
-    private ResponseEntity<Object> deleteProductFromStore(@RequestParam("productId") Long productId) {
+    @Override
+    public ResponseEntity<Object> deleteProductFromStore(@RequestParam("productId") Long productId) {
         try {
             productService.deleteProductFromStore(productId);
             return ResponseEntity.status(HttpStatus.OK).body(productId);
@@ -75,8 +75,8 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/quantityState")
-    private ResponseEntity<Object> addProducrQuantityState(@RequestBody SetProductQuantityStateDto setProductQuantityStateDto) {
+    @Override
+    public ResponseEntity<Object> addProducrQuantityState(@RequestBody SetProductQuantityStateDto setProductQuantityStateDto) {
         try {
             ProductDto updateProduct = productService.updateQuantityState(setProductQuantityStateDto);
             return ResponseEntity.status(HttpStatus.OK).body(updateProduct);

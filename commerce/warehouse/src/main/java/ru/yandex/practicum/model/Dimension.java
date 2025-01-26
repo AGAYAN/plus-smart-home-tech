@@ -1,6 +1,6 @@
 package ru.yandex.practicum.model;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,13 +10,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Diminsion {
-    @Column(name = "width", nullable = false)
+@Entity
+@Table(name = "dimension")
+public class Dimension {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private double width;
-
-    @Column(name = "height", nullable = false)
     private double height;
-
-    @Column(name = "depth", nullable = false)
     private double depth;
 }

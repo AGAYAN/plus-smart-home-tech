@@ -2,21 +2,28 @@ package ru.yandex.practicum.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.dto.NewProductInWarehouseDto;
+import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
+import ru.yandex.practicum.warehouse.dto.AddressDto;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.shoppingCart.dto.BookedProductsDto;
 import ru.yandex.practicum.shoppingCart.dto.ShoppingCartDto;
 import ru.yandex.practicum.model.WarehouseProduct;
 import ru.yandex.practicum.repository.WarehouseProductRepository;
 import ru.yandex.practicum.service.WarehouseService;
+import ru.yandex.practicum.warehouse.dto.NewProductInWarehouseDto;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
+
+    private static final String[] ADDRESSES = {"ADDRESS_1", "ADDRESS_2"};
+    private static final String CURRENT_ADDRESS = ADDRESSES[Random.from(new SecureRandom()).nextInt(0, 1)];
 
     private WarehouseMapper warehouseMapper;
     private final WarehouseProductRepository warehouseRepository;
@@ -61,4 +68,26 @@ public class WarehouseServiceImpl implements WarehouseService {
             throw new NullPointerException("Такой продукт уже есть в БД");
         warehouseRepository.save(warehouseMapper.toWarehouse(request));
     }
+
+    @Override
+    public AddressDto addAddress() {
+        AddressDto address = new AddressDto();
+        address.setCountry(CURRENT_ADDRESS);
+        address.setCity(CURRENT_ADDRESS);
+        address.setStreet(CURRENT_ADDRESS);
+        address.setHouse(CURRENT_ADDRESS);
+        address.setFlat(CURRENT_ADDRESS);
+        return address;
+    }
+
+    @Override
+    public void increaseProductQuantity(AddProductToWarehouseRequest request) {
+        WarehouseProduct warehouseProduct = warehouseRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Нету такого продукта"));
+
+        warehouseProduct.setQuantity(Math.toIntExact(warehouseProduct.getQuantity() + request.getQuantity()));
+        warehouseRepository.save(warehouseProduct);
+    }
+
+
 }

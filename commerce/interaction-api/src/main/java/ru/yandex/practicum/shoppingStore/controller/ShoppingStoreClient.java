@@ -1,33 +1,33 @@
 package ru.yandex.practicum.shoppingStore.controller;
 
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.shoppingStore.dto.Pageable;
 import ru.yandex.practicum.shoppingStore.dto.ProductDto;
 import ru.yandex.practicum.shoppingStore.dto.SetProductQuantityStateDto;
 
 
 import java.util.List;
 
-@FeignClient(name = "shopping-store")
+@FeignClient(name = "shopping-store", path = "/api/v1/shopping-store")
 public interface ShoppingStoreClient {
 
-    @PutMapping("/api/v1/shopping-store")
+    @PutMapping()
     ResponseEntity<Object> createProduct(@RequestBody ProductDto productDto);
 
-    @GetMapping("/api/v1/shopping-store/{productId}")
+    @GetMapping("/{productId}")
     ResponseEntity<Object> ProductIdInformation(@PathVariable Long productId);
 
-    @GetMapping("/api/v1/shopping-store")
-    ResponseEntity<List<ProductDto>> getProductByCategory(@RequestParam("category") String category, SpringDataWebProperties.Pageable pageable);
+    @GetMapping()
+    ResponseEntity<List<ProductDto>> getProductByCategory(@RequestParam("category") String category, Pageable pageable);
 
-    @PostMapping("/api/v1/shopping-store")
+    @PostMapping()
     ResponseEntity<Object> updateProduct(@RequestBody ProductDto productDto);
 
-    @PostMapping("/api/v1/shopping-store/removeProductFromStore")
+    @PostMapping("/removeProductFromStore")
     ResponseEntity<Object> deleteProductFromStore(@RequestParam("productId") Long productId);
 
-    @PostMapping("/api/v1/shopping-store/quantityState")
+    @PostMapping("/quantityState")
     ResponseEntity<Object> addProducrQuantityState(@RequestBody SetProductQuantityStateDto setProductQuantityStateDto);
 }
