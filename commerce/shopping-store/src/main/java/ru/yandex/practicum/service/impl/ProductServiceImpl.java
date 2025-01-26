@@ -56,19 +56,11 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Нету такого товара в таким id");
         }
 
-        Product product = existingProduct.get();
-        product.setProductName(productDto.getProductName());
-        product.setDescription(productDto.getDescription());
-        product.setImageSrc(productDto.getImageSrc());
-        product.setQuantityState((productDto.getQuantityState()));
-        product.setProductState((productDto.getProductState()));
-        product.setRating(productDto.getRating());
-        product.setProductCategory(productDto.getProductCategory());
-        product.setPrice(productDto.getPrice());
+        Product product = productMapper.convertToEntity(productDto);
 
-        Product productSave = productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);
 
-        return productMapper.convertToDto(productSave);
+        return productMapper.convertToDto(updatedProduct);
     }
 
     @Override

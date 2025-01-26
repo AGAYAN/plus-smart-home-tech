@@ -61,13 +61,12 @@ public class ShoppingCartController implements ShoppingCartClient {
     }
 
     @Override
-    public ResponseEntity<ShoppingCart> updateCart(
+    public ResponseEntity<ShoppingCartDto> updateCart(
             @RequestParam String username,
             @RequestBody Map<String, Integer> products) {
-
         try {
-            ShoppingCart updatedCart = shoppingCartService.updateCart(username, products);
-            return ResponseEntity.status(HttpStatus.OK).body(updatedCart);
+            shoppingCartService.updateCart(username, products);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

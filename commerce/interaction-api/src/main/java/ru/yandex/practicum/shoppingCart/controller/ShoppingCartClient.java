@@ -4,7 +4,6 @@ package ru.yandex.practicum.shoppingCart.controller;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.model.ShoppingCart;
 import ru.yandex.practicum.shoppingCart.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.shoppingCart.dto.ShoppingCartDto;
 
@@ -25,7 +24,7 @@ public interface ShoppingCartClient {
     ResponseEntity<String> deactivateShoppingCart(@RequestParam String username);
 
     @PutMapping("/remove")
-    ResponseEntity<ShoppingCart> updateCart(
+    ResponseEntity<ShoppingCartDto> updateCart(
             @RequestParam String username,
             @RequestBody Map<String, Integer> products);
 
