@@ -12,17 +12,17 @@ import java.util.Map;
 @Setter
 @RequiredArgsConstructor
 public class OrderDto {
-    private Long orderId;
-    private Long shoppingCartId;
+    private String orderId;
+    private String shoppingCartId;
     private Map<Long, Integer> products;
-    private Long paymentId;
-    private Long deliveryId;
+    private String paymentId;
+    private String deliveryId;
     private OrderState state;
     private double deliveryWeight;
     private double deliveryVolume;
     private boolean fragile;
-    private Double totalPrice;
-    private Double deliveryPrice;
-    private Double productPrice;
+    private BigDecimal totalPrice;
+    private BigDecimal deliveryPrice;
+    private BigDecimal productPrice;
 
 }
