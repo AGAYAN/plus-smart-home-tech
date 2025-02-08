@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.payment.Dto.OrderDto;
 import ru.yandex.practicum.payment.Dto.PaymentDto;
 import ru.yandex.practicum.payment.controller.PaymentClient;
-import ru.yandex.practicum.payment.enums.OrderState;
 import ru.yandex.practicum.service.PaymentService;
 
 @Service
@@ -20,7 +19,7 @@ public class PaymentController implements PaymentClient {
     }
 
     @Override
-    public OrderState totalCost(OrderDto orderDto) {
+    public double totalCost(OrderDto orderDto) {
         return paymentService.totalCost(orderDto);
     }
 
