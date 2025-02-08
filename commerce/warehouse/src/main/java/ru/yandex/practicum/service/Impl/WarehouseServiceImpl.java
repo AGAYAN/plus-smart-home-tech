@@ -2,6 +2,8 @@ package ru.yandex.practicum.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.model.Dimension;
+import ru.yandex.practicum.order.Dto.ProductReturnRequest;
 import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.warehouse.dto.AddressDto;
 import ru.yandex.practicum.mapper.WarehouseMapper;
@@ -36,6 +38,8 @@ public class WarehouseServiceImpl implements WarehouseService {
             if (warehouseProduct.getQuantity() < products.get(warehouseProduct.getQuantity())) {
                 throw new NullPointerException("Не достаточно товара на складе");
             }
+            warehouseProduct.setQuantity(warehouseProduct.getQuantity() - products.get(warehouseProduct.getId()));
+            warehouseRepository.save(warehouseProduct);
         });
 
         double deliveryWeight = warehouseProducts.stream()
@@ -87,6 +91,32 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         warehouseProduct.setQuantity(Math.toIntExact(warehouseProduct.getQuantity() + request.getQuantity()));
         warehouseRepository.save(warehouseProduct);
+    }
+
+    @Override
+    public BookedProductsDto addProducts(ProductReturnRequest request) {
+        Map<Long, Integer> products = request.getProducts();
+        List<WarehouseProduct> warehouseProducts = warehouseRepository.findAllById(products.keySet());
+
+        warehouseProducts.forEach(warehouseProduct -> {
+            warehouseProduct.setQuantity(warehouseProduct.getQuantity() + products.get(warehouseProduct.getId()));
+            warehouseRepository.save(warehouseProduct);
+        });
+
+        double weight = warehouseProducts.stream()
+                .mapToDouble(WarehouseProduct::getWeight)
+                .sum();
+
+        double volume = warehouseProducts.stream()
+                .mapToDouble(warehouseProduct -> warehouseProduct.getDimension().getWidth()
+                        * warehouseProduct.getDimension().getHeight()
+                        * warehouseProduct.getDimension().getDepth())
+                .sum();
+
+        boolean fragile = warehouseProducts.stream().anyMatch(WarehouseProduct::isFragile);
+
+        return new BookedProductsDto(weight, volume, fragile);
+
     }
 
 

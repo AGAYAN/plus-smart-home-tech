@@ -1,5 +1,6 @@
 package ru.yandex.practicum.service;
 
+import ru.yandex.practicum.order.Dto.ProductReturnRequest;
 import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.warehouse.dto.AddressDto;
 import ru.yandex.practicum.shoppingCart.dto.BookedProductsDto;
@@ -15,4 +16,6 @@ public interface WarehouseService {
     AddressDto addAddress();
 
     void increaseProductQuantity(AddProductToWarehouseRequest request);
+
+    BookedProductsDto addProducts(ProductReturnRequest request);
 }

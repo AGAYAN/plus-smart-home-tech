@@ -5,8 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.order.Dto.AddressDto;
+import ru.yandex.practicum.order.Dto.ProductReturnRequest;
 import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
-import ru.yandex.practicum.warehouse.dto.AddressDto;
 import ru.yandex.practicum.shoppingCart.dto.BookedProductsDto;
 import ru.yandex.practicum.shoppingCart.dto.ShoppingCartDto;
 import ru.yandex.practicum.service.WarehouseService;
@@ -35,7 +36,7 @@ public class WarehouseController implements WarehouseClient {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping
+    @GetMapping("/address")
     public ResponseEntity<AddressDto> getAddress() {
         warehouseService.addAddress();
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -44,6 +45,12 @@ public class WarehouseController implements WarehouseClient {
     @Override
     public ResponseEntity<Void> increaseProductQuantity(AddProductToWarehouseRequest request) {
         warehouseService.increaseProductQuantity(request);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    public ResponseEntity<BookedProductsDto> assemblyProducts(@RequestBody ProductReturnRequest productReturnRequest) {
+        warehouseService.addProducts(productReturnRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 } 
