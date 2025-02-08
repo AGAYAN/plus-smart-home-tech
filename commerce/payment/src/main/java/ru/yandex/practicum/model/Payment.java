@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String paymentId;
     private String orderId;
-    private double totalPayment;
-    private double deliveryTotal;
-    private double feeTotal;
+    private BigDecimal totalPayment;
+    private BigDecimal deliveryTotal;
+    private BigDecimal feeTotal;
 }

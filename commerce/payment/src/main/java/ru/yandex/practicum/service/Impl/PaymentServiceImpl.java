@@ -10,6 +10,7 @@ import ru.yandex.practicum.payment.Dto.PaymentDto;
 import ru.yandex.practicum.repository.PaymentRepository;
 import ru.yandex.practicum.service.PaymentService;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -32,11 +33,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public double totalCost(OrderDto orderDto) {
-        double productPrice = orderDto.getProductPrice();
-        double deliveryPrice = orderDto.getDeliveryPrice();
-        double tax = productPrice * 0.1;
-        double totalCost = productPrice + tax + deliveryPrice;
+    public BigDecimal totalCost(OrderDto orderDto) {
+        BigDecimal productPrice = orderDto.getProductPrice();
+        BigDecimal deliveryPrice = orderDto.getDeliveryPrice();
+        BigDecimal tax = productPrice.multiply(BigDecimal.valueOf(0.1));
+        BigDecimal totalCost = productPrice.add(tax).add(deliveryPrice);
 
         return totalCost;
     }

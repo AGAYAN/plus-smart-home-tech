@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.payment.Dto.OrderDto;
 import ru.yandex.practicum.payment.Dto.PaymentDto;
 import ru.yandex.practicum.payment.controller.PaymentClient;
+import ru.yandex.practicum.payment.enums.OrderState;
 import ru.yandex.practicum.service.PaymentService;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class PaymentController implements PaymentClient {
     }
 
     @Override
-    public double totalCost(OrderDto orderDto) {
+    public BigDecimal totalCost(OrderDto orderDto) {
         return paymentService.totalCost(orderDto);
     }
 

@@ -173,7 +173,7 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Нету заказа с таким id");
 
         Order order = optionalOrder.get();
-        order.setState(paymentClient.totalCost(orderMapper.OrderDtoToOrder(order)));
+        order.setState(OrderState.ON_PAYMENT);
         orderRepository.save(order);
         return orderMapper.OrderDtoToOrder(order);
     }
