@@ -21,6 +21,11 @@ public class WarehouseController implements WarehouseClient {
     private final WarehouseService warehouseService;
 
     @Override
+    public void addNewProduct(NewProductInWarehouseDto request) {
+        warehouseService.addNewProduct(request);
+    }
+
+    @Override
     public ResponseEntity<Object> checkProductAvailability(@RequestBody @Valid ShoppingCartDto shoppingCart) {
         try {
             BookedProductsDto response = warehouseService.checkAvailableProducts(shoppingCart);
@@ -36,7 +41,7 @@ public class WarehouseController implements WarehouseClient {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/address")
+    @Override
     public ResponseEntity<AddressDto> getAddress() {
         warehouseService.addAddress();
         return ResponseEntity.status(HttpStatus.OK).build();

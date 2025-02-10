@@ -9,6 +9,8 @@ import ru.yandex.practicum.warehouse.dto.NewProductInWarehouseDto;
 
 public interface WarehouseService {
 
+    void addNewProduct(NewProductInWarehouseDto product);
+
     BookedProductsDto checkAvailableProducts(ShoppingCartDto shoppingCartDto);
 
     void createProductToWarehouse(NewProductInWarehouseDto request);

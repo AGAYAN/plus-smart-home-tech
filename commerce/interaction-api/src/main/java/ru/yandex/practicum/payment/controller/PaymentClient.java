@@ -22,4 +22,7 @@ public interface PaymentClient {
 
     @PostMapping("/failed")
     void paymendFailed(String paymentId);
+
+    @PostMapping("/productCost")
+    BigDecimal calculateProductCost(OrderDto order);
 }

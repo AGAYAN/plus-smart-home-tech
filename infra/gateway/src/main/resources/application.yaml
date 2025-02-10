@@ -12,6 +12,25 @@ spring:
       discovery:
         enabled: true
         serviceId: config-server
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: order
+          uri: lb://order
+          predicates:
+            - Path=/order/**
+        - id: payment
+          uri: lb://payment
+          predicates:
+            - Path=/payment/**
+        - id: delivery
+          uri: lb://delivery
+          predicates:
+            - Path=/delivery/**
+
+
 
 eureka:
   client:

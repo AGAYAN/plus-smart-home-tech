@@ -2,7 +2,6 @@ package ru.yandex.practicum.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.model.Dimension;
 import ru.yandex.practicum.order.Dto.ProductReturnRequest;
 import ru.yandex.practicum.warehouse.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.warehouse.dto.AddressDto;
@@ -29,6 +28,14 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private WarehouseMapper warehouseMapper;
     private final WarehouseProductRepository warehouseRepository;
+
+    @Override
+    public void addNewProduct(NewProductInWarehouseDto product) {
+        if (warehouseRepository.existsById(Long.valueOf(product.getProductId()))) {
+            throw new NullPointerException("Нету такого продукта"+ product.getProductId());
+        }
+        warehouseRepository.save(warehouseMapper.toWarehouse(product));
+    }
 
     @Override
     public BookedProductsDto checkAvailableProducts(ShoppingCartDto shoppingCartDto) {

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.service;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.order.Dto.CreateNewOrderRequest;
 import ru.yandex.practicum.order.Dto.ProductReturnRequest;
 import ru.yandex.practicum.payment.Dto.OrderDto;
@@ -15,6 +14,8 @@ public interface OrderService {
     OrderDto asscemblyOrder(String orderId);
 
     OrderDto deliveryOrderFailed(String orderId);
+
+    OrderDto configDelivery(String orderId);
 
     OrderDto deliveryOrder(String orderId);
 

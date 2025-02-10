@@ -39,6 +39,11 @@ public class OrderController implements OrderClient{
     }
 
     @Override
+    public OrderDto confirmDelivery(String orderId) {
+        return orderService.configDelivery(orderId);
+    }
+
+    @Override
     public OrderDto deliveryOrderFailed(String orderId) {
         return orderService.deliveryOrderFailed(orderId);
     }

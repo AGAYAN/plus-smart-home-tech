@@ -35,7 +35,6 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getUserOrders(String username) {
         ShoppingCartDto shoppingCart = cartClient.getShoppingCart(username).getBody();
         return orderMapper.mapListOrders(orderRepository.findByShoppingCartId(shoppingCart.getMessage()));
-
     }
 
     @Override
@@ -162,6 +161,18 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = optionalOrder.get();
         order.setState(OrderState.PRODUCT_RETURNED);
+        orderRepository.save(order);
+        return orderMapper.OrderDtoToOrder(order);
+    }
+
+    @Override
+    public OrderDto configDelivery(String orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isEmpty())
+            throw new RuntimeException("Нету заказа с таким id");
+
+        Order order = optionalOrder.get();
+        order.setState(OrderState.DELIVERED);
         orderRepository.save(order);
         return orderMapper.OrderDtoToOrder(order);
     }

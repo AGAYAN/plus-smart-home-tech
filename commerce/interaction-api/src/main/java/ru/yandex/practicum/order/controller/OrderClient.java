@@ -20,6 +20,9 @@ public interface OrderClient {
     @PutMapping
     OrderDto createOrders(@RequestBody CreateNewOrderRequest username);
 
+    @PostMapping("/delivery")
+    OrderDto confirmDelivery(@RequestBody String orderId);
+
     @PostMapping("/assembly")
     OrderDto asscemblyOrder(@RequestBody String orderId);
 
