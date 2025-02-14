@@ -9,6 +9,6 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @EnableEurekaServer // or client
 public class Main {
     public static void main(String[] args) {
-        SpringApplication.run(ShoppingStoreApplication.class, args);
+        SpringApplication.run(Main.class, args);
     }
 }
