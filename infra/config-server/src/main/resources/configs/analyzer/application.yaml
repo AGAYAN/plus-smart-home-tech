@@ -1,0 +1,39 @@
+grpc:
+  client:
+    hub-router:
+      address: static://localhost:59090
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+hibernate:
+  show-sql: true
+  jdbc:
+    time-zone: UTC
+
+topics:
+  snapshots: telemetry.snapshots.v1
+  hubs: telemetry.hubs.v1
+
+kafka:
+  bootstrap-server: localhost:9092
+  key-deserializer-class: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer-classes:
+    snapshots: ru.yandex.practicum.serialization.SensorsSnapshotDeserializer
+    hub-events: ru.yandex.practicum.serialization.HubEventsDeserializer
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/KafkaProject
+    username: admin
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time-zone: UTC
